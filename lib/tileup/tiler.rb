@@ -20,7 +20,7 @@ module TileUp
       @options = OpenStruct.new(default_options.merge(options))
       @options.tile_width = @options.tile_width.to_i unless !@options.tile_width.respond_to? :to_i
       @options.tile_height = @options.tile_height.to_i unless !@options.tile_height.respond_to? :to_i
-      @extension = image_filename.split(".").last
+      @extension = @options.extension || image_filename.split(".").last
       @filename_prefix = @options.filename_prefix
       @logger = ConsoleLogger.new(:info, {verbose: @options.verbose})
 
@@ -136,11 +136,11 @@ module TileUp
 
         # unless told to do otherwise, extend tiles in the last row and column
         # if they do not fill an entire tile width and height.
-        
+
         is_edge = (c[:row] == num_rows - 1 || c[:column] == num_columns - 1)
         needs_extension = ci.rows != tile_height || ci.columns != tile_width
         if @options.extend_incomplete_tiles && is_edge && needs_extension
-          # defaults to white background color, but transparent is probably 
+          # defaults to white background color, but transparent is probably
           # a better default for our purposes.
           ci.background_color = "none"
           # fill to width height, start from top left corner.
